@@ -31,11 +31,14 @@ from sklearn.feature_selection import SelectKBest, f_classif
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Load data from CSV
 file_path = 'bmi.csv'
 data = pd.read_csv(file_path)
 
+# Map 'Gender' column from string to numeric
 data['Gender'] = data['Gender'].map({'Male': 0, 'Female': 1})
 
+# Define function to apply multiple scalers to features
 def apply_scalers(data, features):
     scalers = {
         'StandardScaler': StandardScaler(),
@@ -50,30 +53,43 @@ def apply_scalers(data, features):
         scaled_data[key]['Gender'] = data['Gender'].values
     return scaled_data
 
+# Features to scale
 features = ['Height', 'Weight', 'Index']
+# Apply scalers to data
 scaled_data = apply_scalers(data, features)
 
+# Prepare feature matrix X and target vector y
 X = data.drop('Gender', axis=1)
 y = data['Gender']
+
+# Feature selection: select top 2 features related to target
 selector = SelectKBest(score_func=f_classif, k=2)
 X_selected = selector.fit_transform(X, y)
+
+# Get names of selected features
 selected_features = X.columns[selector.get_support(indices=True)]
+# Create DataFrame with selected features and target
 selected_data = pd.DataFrame(X_selected, columns=selected_features)
 selected_data['Gender'] = y.values
 
+# Save selected data to CSV file
 selected_data.to_csv('selected_scaled_data.csv', index=False)
 
+# Plot feature distribution comparison after scaling
 plt.figure(figsize=(15, 8))
 plt.suptitle('Feature Scaling Comparison')
+
 for i, (scaler, df) in enumerate(scaled_data.items(), 1):
     plt.subplot(2, 2, i)
     for feature in features:
         sns.kdeplot(df[feature], label=feature)
     plt.title(scaler)
     plt.legend()
+
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig('feature_scaling_comparison.png')
 
+# Plot correlation heatmap of original data
 plt.figure(figsize=(8, 6))
 sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
 plt.title('Correlation Heatmap')
