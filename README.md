@@ -34,9 +34,7 @@ import seaborn as sns
 file_path = 'bmi.csv'
 data = pd.read_csv(file_path)
 
-
 data['Gender'] = data['Gender'].map({'Male': 0, 'Female': 1})
-
 
 def apply_scalers(data, features):
     scalers = {
@@ -54,7 +52,6 @@ def apply_scalers(data, features):
 
 features = ['Height', 'Weight', 'Index']
 scaled_data = apply_scalers(data, features)
-
 
 X = data.drop('Gender', axis=1)
 y = data['Gender']
@@ -75,13 +72,12 @@ for i, (scaler, df) in enumerate(scaled_data.items(), 1):
     plt.title(scaler)
     plt.legend()
 plt.tight_layout(rect=[0, 0, 1, 0.95])
-plt.savefig('feature_scaling_comparison.png')  # Saves the comparison plot
-
+plt.savefig('feature_scaling_comparison.png')
 
 plt.figure(figsize=(8, 6))
 sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
 plt.title('Correlation Heatmap')
-plt.savefig('correlation_heatmap.png')  # Saves the heatmap
+plt.savefig('correlation_heatmap.png')
 
 <img width="1546" height="808" alt="Screenshot 2025-10-15 135349" src="https://github.com/user-attachments/assets/456ecc0e-29df-4b91-a6ef-5930c84c8628" />
 <img width="991" height="816" alt="Screenshot 2025-10-15 135338" src="https://github.com/user-attachments/assets/f2b6c959-db61-495d-8152-969b859338a0" />
