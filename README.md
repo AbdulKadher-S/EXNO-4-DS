@@ -31,14 +31,13 @@ from sklearn.feature_selection import SelectKBest, f_classif
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Step 1: Read the given data
 file_path = 'bmi.csv'
 data = pd.read_csv(file_path)
 
-# Step 2: Data Cleaning - Encode Gender category
+
 data['Gender'] = data['Gender'].map({'Male': 0, 'Female': 1})
 
-# Step 3: Feature Scaling using different scalers
+
 def apply_scalers(data, features):
     scalers = {
         'StandardScaler': StandardScaler(),
@@ -56,7 +55,7 @@ def apply_scalers(data, features):
 features = ['Height', 'Weight', 'Index']
 scaled_data = apply_scalers(data, features)
 
-# Step 4: Feature Selection - SelectKBest with ANOVA F-test
+
 X = data.drop('Gender', axis=1)
 y = data['Gender']
 selector = SelectKBest(score_func=f_classif, k=2)
@@ -65,11 +64,8 @@ selected_features = X.columns[selector.get_support(indices=True)]
 selected_data = pd.DataFrame(X_selected, columns=selected_features)
 selected_data['Gender'] = y.values
 
-# Step 5: Save selected data to file
 selected_data.to_csv('selected_scaled_data.csv', index=False)
 
-# Visualizations:
-# Feature scaling comparison plots
 plt.figure(figsize=(15, 8))
 plt.suptitle('Feature Scaling Comparison')
 for i, (scaler, df) in enumerate(scaled_data.items(), 1):
@@ -81,7 +77,7 @@ for i, (scaler, df) in enumerate(scaled_data.items(), 1):
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig('feature_scaling_comparison.png')  # Saves the comparison plot
 
-# Correlation heatmap of original data
+
 plt.figure(figsize=(8, 6))
 sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
 plt.title('Correlation Heatmap')
